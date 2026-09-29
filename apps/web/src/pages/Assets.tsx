@@ -269,7 +269,7 @@ export function PublicPassport() {
   return (
     <div className="mesh-bg min-h-full p-6">
       <div className="mx-auto max-w-xl">
-        <div className="mb-4 flex items-center justify-between"><img src="/brand/wordmark-dark.png" alt="TRUSTMESH" className="h-8 w-auto" /><Badge tone="signal" dot>LOCAL EVM · read-only</Badge></div>
+        <div className="mb-4 flex items-center justify-between"><img src="/brand/logo.svg" alt="TRUSTMESH" className="h-8 w-auto" /><Badge tone="signal" dot>LOCAL EVM · read-only</Badge></div>
         <Loading error={error} loading={loading}>
           {data && (
             <div className="card p-6">

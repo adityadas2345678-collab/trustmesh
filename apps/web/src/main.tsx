@@ -101,7 +101,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="mesh-bg flex min-h-full">
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-ink-800 bg-ink-950/60 p-4 lg:flex">
         <Link to="/demo" className="mb-7 block px-1" aria-label="TRUSTMESH home">
-          <img src="/brand/wordmark-dark.png" alt="TRUSTMESH" className="h-auto w-full max-w-[200px]" />
+          <img src="/brand/logo.svg" alt="TRUSTMESH" className="h-auto w-full max-w-[200px]" />
           <div className="mt-1.5 whitespace-nowrap pl-1 text-[8.5px] font-bold uppercase tracking-[0.16em] text-ink-400">Physical proof · Digital trust</div>
         </Link>
         <nav className="flex flex-col gap-1" aria-label="main">
@@ -120,7 +120,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <Header />
         <nav className="flex items-center gap-1 overflow-x-auto border-b border-ink-800 px-3 py-2 lg:hidden" aria-label="main mobile">
-          <Link to="/demo" className="mr-1 shrink-0" aria-label="TRUSTMESH home"><img src="/brand/mark-dark.png" alt="" className="h-7 w-auto" /></Link>
+          <Link to="/demo" className="mr-1 shrink-0" aria-label="TRUSTMESH home"><img src="/brand/mark.svg" alt="" className="h-7 w-auto" /></Link>
           {NAV.map(([to, label]) => <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => `whitespace-nowrap rounded-md px-2 py-1 text-xs ${isActive ? "bg-ink-800" : "text-ink-300"}`}>{label}</NavLink>)}
         </nav>
         <main className="mx-auto w-full max-w-[1400px] flex-1 p-5 lg:p-8">{children}</main>
@@ -133,7 +133,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mesh-bg min-h-full">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-ink-800 bg-ink-950/85 px-5 py-3 backdrop-blur">
-        <Link to="/demo" aria-label="TRUSTMESH home"><img src="/brand/wordmark-dark.png" alt="TRUSTMESH" className="h-8 w-auto sm:h-9" /></Link>
+        <Link to="/demo" aria-label="TRUSTMESH home"><img src="/brand/logo.svg" alt="TRUSTMESH" className="h-8 w-auto sm:h-9" /></Link>
         <nav className="flex items-center gap-2 text-sm"><KitBadge /><NavLink to="/demo" className={({ isActive }) => (isActive ? "btn-primary" : "btn-ghost")}>▶ Live demo</NavLink><NavLink to="/guide" className={({ isActive }) => (isActive ? "btn-primary" : "btn-ghost")}>📘 Guide</NavLink><Link to="/login" className="hidden text-xs text-ink-400 hover:text-ink-100 sm:inline">choose a role →</Link></nav>
       </header>
       <main className="mx-auto w-full max-w-[1400px] p-5 lg:p-8">{children}</main>
