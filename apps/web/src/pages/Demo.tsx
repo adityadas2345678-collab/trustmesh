@@ -4,6 +4,7 @@ import { HOSTED, api, post, setCsrf, useSession } from "../lib/api";
 import { HashGlyph } from "../ui";
 import { Scene } from "./Simulator";
 import { KitConnect } from "../hosted/KitConnect";
+import { BrandLockup } from "../components_brand";
 
 type Log = { icon: string; text: string; who?: string; tx?: string; ok?: boolean };
 const STORE = "trustmesh.demo.v1";
@@ -116,10 +117,11 @@ export function Demo() {
     <div className="mx-auto max-w-6xl">
       {/* hero */}
       <div className="mb-8 text-center">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-signal">TRUSTMESH · 2-minute live demo</div>
+        <BrandLockup className="mb-7" maxWidth={440} />
+        <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-signal">2-minute live demo</div>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">Machines that can't be <span className="text-signal">lied about.</span></h1>
         <p className="mx-auto mt-3 max-w-2xl text-ink-300 sm:text-lg">A sensor watches a real machine. A blockchain enforces the rules. Paperwork can be faked — this can't.</p>
-        <div className="mx-auto mt-5 grid max-w-3xl grid-cols-3 gap-2 text-left text-xs sm:text-sm">
+        <div className="mx-auto mt-5 grid max-w-3xl grid-cols-1 gap-2 text-left text-sm sm:grid-cols-3">
           <div className="rounded-xl border border-crit/30 bg-crit/5 p-3"><b className="text-crit">Problem</b><div className="mt-1 text-ink-300">Hand-overs, repairs and sales of equipment are recorded on paper anyone can edit.</div></div>
           <div className="rounded-xl border border-signal/30 bg-signal/5 p-3"><b className="text-signal">Solution</b><div className="mt-1 text-ink-300">A sensor proves the machine's real state; smart contracts only allow actions the evidence supports.</div></div>
           <div className="rounded-xl border border-verify/30 bg-verify/5 p-3"><b className="text-verify">Proof</b><div className="mt-1 text-ink-300">Click through 6 steps below — every step is a real blockchain transaction.</div></div>

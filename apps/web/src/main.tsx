@@ -16,6 +16,7 @@ import { Guide } from "./pages/Guide";
 import { Simulator } from "./pages/Simulator";
 import { Demo } from "./pages/Demo";
 import { KitCtx, KitWatcher, KitBadge, useKit } from "./KitWatcher";
+import { BrandLockup } from "./components_brand";
 
 // Two-level navigation: 3 simple entry points for everyone, the full console tucked under "Engineer console".
 const SIMPLE = [["/demo", "Live demo", "▶"], ["/simulator", "Try the sensors", "🎛"], ["/guide", "Step-by-step guide", "📘"]] as const;
@@ -99,9 +100,9 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mesh-bg flex min-h-full">
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-ink-800 bg-ink-950/60 p-4 lg:flex">
-        <Link to="/demo" className="mb-6 flex items-center gap-2.5 px-2">
-          <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden><rect width="32" height="32" rx="8" fill="#131d3b" /><path d="M8 11h16M16 11v12M10 22l6-5 6 5" stroke="#22d3ee" strokeWidth="2.5" fill="none" strokeLinecap="round" /></svg>
-          <div><div className="text-sm font-bold tracking-[0.18em]">TRUSTMESH</div><div className="text-[10px] text-ink-400">physical asset lifecycle</div></div>
+        <Link to="/demo" className="mb-7 block px-1" aria-label="TRUSTMESH home">
+          <img src="/brand/wordmark-dark.png" alt="TRUSTMESH" className="h-auto w-full max-w-[200px]" />
+          <div className="mt-1.5 whitespace-nowrap pl-1 text-[8.5px] font-bold uppercase tracking-[0.16em] text-ink-400">Physical proof · Digital trust</div>
         </Link>
         <nav className="flex flex-col gap-1" aria-label="main">
           {SIMPLE.map(([to, label, icon]) => <NavItem key={to} to={to} label={label} icon={icon} big />)}
@@ -118,7 +119,8 @@ function Shell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <Header />
-        <nav className="flex gap-1 overflow-x-auto border-b border-ink-800 px-3 py-2 lg:hidden" aria-label="main mobile">
+        <nav className="flex items-center gap-1 overflow-x-auto border-b border-ink-800 px-3 py-2 lg:hidden" aria-label="main mobile">
+          <Link to="/demo" className="mr-1 shrink-0" aria-label="TRUSTMESH home"><img src="/brand/mark-dark.png" alt="" className="h-7 w-auto" /></Link>
           {NAV.map(([to, label]) => <NavLink key={to} to={to} end={to === "/"} className={({ isActive }) => `whitespace-nowrap rounded-md px-2 py-1 text-xs ${isActive ? "bg-ink-800" : "text-ink-300"}`}>{label}</NavLink>)}
         </nav>
         <main className="mx-auto w-full max-w-[1400px] flex-1 p-5 lg:p-8">{children}</main>
@@ -131,7 +133,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="mesh-bg min-h-full">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-ink-800 bg-ink-950/85 px-5 py-3 backdrop-blur">
-        <Link to="/demo" className="text-sm font-bold tracking-[0.18em]">TRUSTMESH</Link>
+        <Link to="/demo" aria-label="TRUSTMESH home"><img src="/brand/wordmark-dark.png" alt="TRUSTMESH" className="h-8 w-auto sm:h-9" /></Link>
         <nav className="flex items-center gap-2 text-sm"><KitBadge /><NavLink to="/demo" className={({ isActive }) => (isActive ? "btn-primary" : "btn-ghost")}>▶ Live demo</NavLink><NavLink to="/guide" className={({ isActive }) => (isActive ? "btn-primary" : "btn-ghost")}>📘 Guide</NavLink><Link to="/login" className="hidden text-xs text-ink-400 hover:text-ink-100 sm:inline">choose a role →</Link></nav>
       </header>
       <main className="mx-auto w-full max-w-[1400px] p-5 lg:p-8">{children}</main>
@@ -157,12 +159,10 @@ function Login() {
     <div className="mesh-bg grid min-h-full place-items-center p-6">
       <div className="w-full max-w-4xl">
         <div className="mb-10 text-center">
-          <div className="mx-auto mb-5 flex w-fit items-center gap-3">
-            {["0x7a1c", "0x3be9", "0xc0de"].map((h, i) => <HashGlyph key={i} hash={h + "a".repeat(60)} size={34} className={i === 1 ? "scale-125" : "opacity-60"} />)}
-          </div>
+          <BrandLockup className="mb-9" maxWidth={440} />
           <h1 className="text-4xl font-semibold tracking-tight">Trust the asset, <span className="text-signal">not the paperwork.</span></h1>
           <p className="mx-auto mt-3 max-w-2xl text-ink-300">Physical asset → authenticated device evidence → hash commitment → contract-enforced custody, maintenance and inspection.</p>
-          <div className="mt-4 flex justify-center gap-2"><Badge tone="signal" dot>LOCAL EVM · chain {manifest?.chainId ?? "…"}</Badge><Badge tone="warn">prototype</Badge></div>
+          <div className="mt-4 flex justify-center gap-2"><Badge tone="signal" dot>{HOSTED ? "In-browser EVM" : "LOCAL EVM"} · chain {manifest?.chainId ?? "…"}</Badge><Badge tone="warn">prototype</Badge></div>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link to="/demo" className="btn-primary !px-6 !py-3 !text-base">▶ Watch the 2-minute live demo</Link>
             <Link to="/guide" className="btn-ghost !px-5 !py-3 !text-base">📘 Step-by-step guide</Link>
@@ -252,8 +252,8 @@ function BootScreen({ step, error }: { step: string; error?: string }) {
   return (
     <div className="mesh-bg grid min-h-full place-items-center p-6 text-center">
       <div className="max-w-md">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-2xl bg-ink-800 text-4xl shadow-[0_0_60px_-10px] shadow-signal">{error ? "⚠️" : <span className="animate-pulse">⛓</span>}</div>
-        <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-signal">TRUSTMESH · live demo</div>
+        <div className={error ? "opacity-60" : "animate-pulse"}><BrandLockup className="mb-8" maxWidth={380} /></div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-signal">Live demo</div>
         <h1 className="mt-2 text-2xl font-semibold">{error ? "Couldn't start the demo" : "Setting up your private demo…"}</h1>
         <p className="mt-3 text-sm text-ink-300">{error ?? step}</p>
         {!error && <div className="mx-auto mt-5 h-1.5 w-56 overflow-hidden rounded-full bg-ink-800"><div className="h-full w-1/3 animate-[slidein_1s_ease-in-out_infinite_alternate] rounded-full bg-signal" style={{ animation: "boot 1.2s ease-in-out infinite alternate" }} /></div>}

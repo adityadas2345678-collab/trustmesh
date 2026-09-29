@@ -1,6 +1,6 @@
 <div align="center">
 
-# TRUSTMESH
+<img src="apps/web/public/brand/logo-original.png" alt="TRUSTMESH — Physical proof. Digital trust." width="720" />
 
 ### Blockchain-verified physical asset lifecycle
 
