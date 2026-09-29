@@ -57,7 +57,7 @@ Physical asset → identified device → authenticated evidence → integrity ha
 **Requirements:** Node.js 22.13+ or 24 (see `.nvmrc`), npm and Git. Python 3 and PlatformIO are needed only for firmware.
 
 ```bash
-git clone https://github.com/<your-username>/trustmesh.git
+git clone https://github.com/adityadas2345678-collab/trustmesh.git
 cd trustmesh
 npm ci
 npm run setup      # creates .env, compiles contracts, generates ABIs and pin maps
