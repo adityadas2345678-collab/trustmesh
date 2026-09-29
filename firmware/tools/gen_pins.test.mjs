@@ -1,0 +1,10 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { validate } from "./gen_pins.mjs";
+const pin = (o) => ({ component: "X", signal: "S", dir: "in", supply: "3.3 V", level: "3.3 V", symbol: "PIN_X", circuit: "direct", ...o });
+const errs = (pins) => validate("T", { caps: ["RFID"], pins });
+test("accepts legitimate shared SPI bus", () => assert.deepEqual(errs([pin({ gpio: 18, bus: "SPI_VSPI", signal: "SCK", symbol: "PIN_SPI_SCK", dir: "out" }), pin({ component: "Y", gpio: 18, bus: "SPI_VSPI", signal: "SCK", symbol: "PIN_SPI_SCK", dir: "out" })]), []));
+test("rejects duplicate GPIO", () => assert.match(errs([pin({ gpio: 4 }), pin({ component: "Y", gpio: 4, symbol: "PIN_Y" })])[0], /conflicts/));
+test("rejects output on input-only pin", () => assert.match(errs([pin({ gpio: 34, dir: "out" })])[0], /input-only/));
+test("rejects flash pins and strapping pins", () => { assert.match(errs([pin({ gpio: 6 })])[0], /flash/); assert.match(errs([pin({ gpio: 12, dir: "out" })])[0], /strapping/); });
+test("rejects analog on ADC2 and 5 V signal without divider", () => { assert.match(errs([pin({ gpio: 26, level: "analog" })])[0], /ADC1/); assert.match(errs([pin({ gpio: 35, level: "5 V → 3.3 V" })])[0], /divider/); });

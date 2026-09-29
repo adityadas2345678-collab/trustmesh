@@ -1,0 +1,45 @@
+{
+  "name": "trustmesh",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "TRUSTMESH — Blockchain-verified physical asset lifecycle (local-first hackathon prototype)",
+  "engines": {
+    "node": ">=22.13 <25"
+  },
+  "workspaces": [
+    "packages/shared",
+    "packages/contracts",
+    "apps/api",
+    "apps/web",
+    "tools/serial-bridge"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "dev": "node scripts/dev.mjs",
+    "demo:simulate": "tsx scripts/simulate.ts",
+    "bridge": "tsx tools/serial-bridge/src/bridge.ts",
+    "pins": "node firmware/tools/gen_pins.mjs",
+    "test:contracts": "npm run test -w packages/contracts",
+    "test:shared": "vitest run --root packages/shared",
+    "test:api": "vitest run --root apps/api",
+    "test:pins": "node firmware/tools/gen_pins.mjs --check && node --test firmware/tools/gen_pins.test.mjs",
+    "test:e2e": "tsx tests/e2e.ts",
+    "test:all": "npm run test:pins && npm run test:shared && npm run test:contracts && npm run test:api && npm run test:e2e && npm run firmware:test",
+    "build": "npm run build -w packages/contracts && npm run build -w apps/api && npm run build -w apps/web",
+    "reset:demo": "node scripts/reset.mjs",
+    "firmware:build": "node scripts/firmware.mjs build",
+    "firmware:test": "node scripts/firmware.mjs test",
+    "test:bridge": "python3 tests/bridge_pty_test.py",
+    "firmware:secrets": "node scripts/firmware-secrets.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "marked": "^18.0.14",
+    "playwright": "^1.63.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

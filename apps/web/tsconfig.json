@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "lib": ["ES2023", "DOM", "DOM.Iterable"], "module": "ESNext", "moduleResolution": "Bundler", "jsx": "react-jsx",
+    "strict": true, "noEmit": true, "allowImportingTsExtensions": true, "skipLibCheck": true, "resolveJsonModule": true, "types": ["vite/client"]
+  },
+  "include": ["src", "../../packages/shared/src/index.ts", "../../packages/shared/src/constants.ts", "../../packages/shared/src/canonical.ts", "../../packages/shared/src/evidence.ts", "../../packages/shared/src/actions.ts", "../../packages/shared/src/generated"]
+}

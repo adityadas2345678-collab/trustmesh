@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.local/
+data/
+packages/contracts/artifacts/
+packages/contracts/cache/
+firmware/.pio/
+firmware/include/secrets.h
+test-results/
+playwright-report/
+*.log
+.DS_Store
+docs/hardware-guide/guide.html

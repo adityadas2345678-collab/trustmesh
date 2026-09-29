@@ -1,0 +1,9 @@
+{
+  "name": "@trustmesh/shared",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./node": "./src/node.ts" },
+  "scripts": { "vectors": "tsx src/gen-vectors.ts" },
+  "dependencies": { "viem": "2.56.9" }
+}

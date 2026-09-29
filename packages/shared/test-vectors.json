@@ -1,0 +1,46 @@
+{
+  "note": "Shared HMAC/hash test vectors — consumed by packages/shared tests and firmware/test/test_protocol.",
+  "secretHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "hmac": [
+    {
+      "domain": "TMD1",
+      "deviceId": "ESP32-017",
+      "keyVersion": 1,
+      "payload": "{\"v\":1,\"type\":\"hello\",\"deviceId\":\"ESP32-017\",\"bootId\":\"b00t\",\"seq\":0,\"uptimeMs\":1234}",
+      "preimageHex": "544d44310945535033322d30313700000001000000557b2276223a312c2274797065223a2268656c6c6f222c226465766963654964223a2245535033322d303137222c22626f6f744964223a2262303074222c22736571223a302c22757074696d654d73223a313233347d",
+      "macHex": "ef6ac193d3c044b14e93943331319344a8f33b61a376bec1b18c2ac0f6d1523c"
+    },
+    {
+      "domain": "TMS1",
+      "deviceId": "ESP32-017",
+      "keyVersion": 1,
+      "payload": "{\"sessionId\":\"s1\",\"serverTime\":1700000000}",
+      "preimageHex": "544d53310945535033322d303137000000010000002a7b2273657373696f6e4964223a227331222c2273657276657254696d65223a313730303030303030307d",
+      "macHex": "df2a6b80bc9998b29ac9fda41925380f4b172916903d66530ccd935e35460418"
+    },
+    {
+      "domain": "TMD1",
+      "deviceId": "SIM-ESP32-017",
+      "keyVersion": 7,
+      "payload": "",
+      "preimageHex": "544d44310d53494d2d45535033322d3031370000000700000000",
+      "macHex": "c06226e29f6ddf826f3bd9e921d37db7b419698382846f870269b19473ff8abe"
+    }
+  ],
+  "canonical": {
+    "input": {
+      "schema": "trustmesh.evidence/1",
+      "b": [
+        1,
+        true,
+        null
+      ],
+      "a": {
+        "z": 1,
+        "y": "é"
+      }
+    },
+    "canonical": "{\"a\":{\"y\":\"é\",\"z\":1},\"b\":[1,true,null],\"schema\":\"trustmesh.evidence/1\"}",
+    "keccak256": "0xb76907cdd777a980871f3131ee5b64e7de4d0c954d890834057a7cae19c6f87a"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@trustmesh/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/main.ts",
+    "start": "tsx src/main.ts",
+    "seed": "tsx src/seed.ts",
+    "build": "tsc --noEmit -p . && esbuild src/main.ts --bundle --platform=node --format=esm --target=node22 --external:fastify --external:@fastify/* --external:viem --external:@sinclair/typebox --outfile=dist/main.mjs"
+  },
+  "dependencies": {
+    "@trustmesh/shared": "*",
+    "fastify": "5.12.5",
+    "@fastify/cookie": "11.1.2",
+    "@fastify/swagger": "9.9.0",
+    "@fastify/swagger-ui": "6.1.1",
+    "@sinclair/typebox": "0.34.52",
+    "viem": "2.56.9"
+  },
+  "devDependencies": { "esbuild": "0.25.12" }
+}

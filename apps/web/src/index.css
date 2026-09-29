@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource/jetbrains-mono/400.css";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-ink-950: #060a16;
+  --color-ink-900: #0a1022;
+  --color-ink-850: #0e1630;
+  --color-ink-800: #131d3b;
+  --color-ink-700: #1c2950;
+  --color-ink-600: #2a3a68;
+  --color-ink-400: #7d8bb5;
+  --color-ink-300: #a9b4d6;
+  --color-ink-100: #e6eaf7;
+  --color-signal: #22d3ee;
+  --color-verify: #34d399;
+  --color-warn: #fbbf24;
+  --color-crit: #f87171;
+  --color-sim: #c084fc;
+}
+
+html, body, #root { height: 100%; }
+body { @apply bg-ink-950 text-ink-100 font-sans antialiased; }
+.mesh-bg {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgb(34 211 238 / 0.08), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgb(192 132 252 / 0.06), transparent 60%),
+    linear-gradient(rgb(255 255 255 / 0.018) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgb(255 255 255 / 0.018) 1px, transparent 1px) 0 0 / 28px 28px,
+    var(--color-ink-950);
+}
+@utility card { @apply rounded-2xl border border-ink-700/70 bg-ink-900/80 backdrop-blur-sm; }
+@utility btn { @apply inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-signal focus-visible:outline-offset-2; }
+@utility btn-primary { @apply btn bg-signal text-ink-950 hover:bg-cyan-300; }
+@utility btn-ghost { @apply btn border border-ink-600 text-ink-100 hover:bg-ink-800; }
+@utility btn-danger { @apply btn border border-crit/50 text-crit hover:bg-crit/10; }
+@utility input { @apply w-full rounded-lg border border-ink-600 bg-ink-950/70 px-3 py-2 text-sm text-ink-100 placeholder:text-ink-400 focus:border-signal focus:outline-none; }
+@utility label { @apply mb-1 block text-xs font-medium uppercase tracking-wider text-ink-400; }
+@utility mono { @apply font-mono text-[12px]; }
+@keyframes pulse-ring { 0% { transform: scale(.8); opacity: .8 } 100% { transform: scale(2.4); opacity: 0 } }
+.pulse-ring { animation: pulse-ring 1.4s ease-out; }
+@keyframes flow { to { stroke-dashoffset: -40 } }
+.flow { stroke-dasharray: 4 6; animation: flow 1.2s linear infinite; }
+@keyframes slidein { from { transform: translateY(-6px); opacity: 0 } to { transform: none; opacity: 1 } }
+.slidein { animation: slidein .35s ease-out; }
+@media (prefers-reduced-motion: reduce) { .pulse-ring, .flow, .slidein { animation: none } }
+::-webkit-scrollbar { width: 8px; height: 8px } ::-webkit-scrollbar-thumb { background: var(--color-ink-700); border-radius: 8px }

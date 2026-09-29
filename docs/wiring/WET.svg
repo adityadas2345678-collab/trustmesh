@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="398" viewBox="0 0 980 398" font-family="ui-monospace,Menlo,monospace" font-size="11">
+<rect width="100%" height="100%" fill="#0a1022"/>
+<text x="20" y="28" fill="#22d3ee" font-size="14" font-weight="bold">TRUSTMESH WET — generated from pins/profiles.json</text>
+<rect x="20" y="50" width="200" height="240" rx="10" fill="#131d3b" stroke="#22d3ee"/><text x="30" y="66" fill="#e6eaf7" font-weight="bold">ESP32-DevKitC (WROOM-32)</text>
+<rect x="640" y="48" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="64" fill="#e6eaf7">Rain-drop module</text>
+<rect x="640" y="92" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="108" fill="#e6eaf7">Soil-moisture module</text>
+<rect x="640" y="136" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="152" fill="#e6eaf7">Wet-sensor power switch</text>
+<rect x="640" y="180" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="196" fill="#e6eaf7">DS18B20 probe</text>
+<rect x="640" y="224" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="240" fill="#e6eaf7">HC-SR04</text>
+<rect x="640" y="268" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="284" fill="#e6eaf7">IR obstacle module</text>
+<rect x="640" y="312" width="320" height="35.2" rx="6" fill="#131d3b" stroke="#2a3a68"/><text x="650" y="328" fill="#e6eaf7">RGB LED (common anode)</text>
+<text x="30" y="88" fill="#a9b4d6">GPIO36</text><text x="95" y="88" fill="#7d8bb5">PIN_RAIN</text><path d="M220 84 C 420 84, 440 60, 640 60" stroke="#34d399" fill="none" stroke-width="1.4"/><text x="430" y="69" fill="#34d399" font-size="9">AO</text>
+<text x="30" y="110" fill="#a9b4d6">GPIO39</text><text x="95" y="110" fill="#7d8bb5">PIN_SOIL</text><path d="M220 106 C 420 106, 440 104, 640 104" stroke="#34d399" fill="none" stroke-width="1.4"/><text x="430" y="102" fill="#34d399" font-size="9">AO</text>
+<text x="30" y="132" fill="#a9b4d6">GPIO16</text><text x="95" y="132" fill="#7d8bb5">PIN_WET_PWR</text><path d="M220 128 C 420 128, 440 148, 640 148" stroke="#fbbf24" fill="none" stroke-width="1.4"/><text x="430" y="135" fill="#fbbf24" font-size="9">VCC enable ⚠ circuit</text>
+<text x="30" y="154" fill="#a9b4d6">GPIO4</text><text x="95" y="154" fill="#7d8bb5">PIN_ONEWIRE</text><path d="M220 150 C 420 150, 440 192, 640 192" stroke="#c084fc" fill="none" stroke-width="1.4"/><text x="430" y="168" fill="#c084fc" font-size="9">DQ</text>
+<text x="30" y="176" fill="#a9b4d6">GPIO26</text><text x="95" y="176" fill="#7d8bb5">PIN_US_TRIG</text><path d="M220 172 C 420 172, 440 236, 640 236" stroke="#fbbf24" fill="none" stroke-width="1.4"/><text x="430" y="201" fill="#fbbf24" font-size="9">TRIG</text>
+<text x="30" y="198" fill="#a9b4d6">GPIO34</text><text x="95" y="198" fill="#7d8bb5">PIN_US_ECHO</text><path d="M220 194 C 420 194, 440 236, 640 236" stroke="#34d399" fill="none" stroke-width="1.4"/><text x="430" y="212" fill="#34d399" font-size="9">ECHO ⚠ circuit</text>
+<text x="30" y="220" fill="#a9b4d6">GPIO35</text><text x="95" y="220" fill="#7d8bb5">PIN_IR</text><path d="M220 216 C 420 216, 440 280, 640 280" stroke="#34d399" fill="none" stroke-width="1.4"/><text x="430" y="245" fill="#34d399" font-size="9">DO</text>
+<text x="30" y="242" fill="#a9b4d6">GPIO25</text><text x="95" y="242" fill="#7d8bb5">PIN_LED_R</text><path d="M220 238 C 420 238, 440 324, 640 324" stroke="#fbbf24" fill="none" stroke-width="1.4"/><text x="430" y="278" fill="#fbbf24" font-size="9">R</text>
+<text x="30" y="264" fill="#a9b4d6">GPIO33</text><text x="95" y="264" fill="#7d8bb5">PIN_LED_G</text><path d="M220 260 C 420 260, 440 324, 640 324" stroke="#fbbf24" fill="none" stroke-width="1.4"/><text x="430" y="289" fill="#fbbf24" font-size="9">G</text>
+<text x="30" y="286" fill="#a9b4d6">GPIO32</text><text x="95" y="286" fill="#7d8bb5">PIN_LED_B</text><path d="M220 282 C 420 282, 440 324, 640 324" stroke="#fbbf24" fill="none" stroke-width="1.4"/><text x="430" y="300" fill="#fbbf24" font-size="9">B</text>
+<text x="20" y="384" fill="#7d8bb5">green = input · amber = output · violet = bidirectional · "⚠ circuit" = divider/driver required (see WIRING_TABLES.md). Power & ground rails omitted; external supplies share GND.</text>
+</svg>

@@ -1,0 +1,1321 @@
+{
+  "$comment": "SINGLE SOURCE OF TRUTH for pins. gen_pins.mjs generates include/pins_generated.h, docs/WIRING_TABLES.md and docs/wiring/*.svg from this file and runs the conflict checker. Reference board: Espressif ESP32-DevKitC with ESP32-WROOM-32 module (classic ESP32). Do NOT reuse on ESP32-C3/S2/S3 or WROVER (GPIO16/17 used by PSRAM).",
+  "sharedBuses": {
+    "SPI_VSPI": [
+      18,
+      19,
+      23
+    ],
+    "SPI_NEWRRO": [
+      16,
+      17,
+      18
+    ]
+  },
+  "profiles": {
+    "CORE": {
+      "description": "Minimum custody demo: RFID + presence (HC-SR04, IR) + DHT22 + flame; optional servo gate + RGB status.",
+      "caps": [
+        "RFID",
+        "DHT22",
+        "ULTRASONIC",
+        "IR",
+        "FLAME",
+        "SERVO",
+        "RGB"
+      ],
+      "pins": [
+        {
+          "component": "RC522 RFID",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V ONLY",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "MISO",
+          "gpio": 19,
+          "dir": "in",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "MOSI",
+          "gpio": 23,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "SDA/SS (chip select)",
+          "gpio": 21,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_SS",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "RST",
+          "gpio": 22,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_RST",
+          "circuit": "direct; IRQ not connected"
+        },
+        {
+          "component": "DHT22",
+          "signal": "DATA",
+          "gpio": 4,
+          "dir": "io",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_DHT",
+          "circuit": "10 kΩ pull-up DATA→3.3 V if the module has none"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "TRIG",
+          "gpio": 26,
+          "dir": "out",
+          "supply": "5 V",
+          "level": "3.3 V drive (accepted by most modules — verify)",
+          "symbol": "PIN_US_TRIG",
+          "circuit": "direct"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "ECHO",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "5 V",
+          "level": "5 V → 3.3 V",
+          "symbol": "PIN_US_ECHO",
+          "circuit": "divider ECHO—10 kΩ—GPIO34—20 kΩ—GND (≈3.3 V)"
+        },
+        {
+          "component": "IR obstacle module",
+          "signal": "DO (active LOW)",
+          "gpio": 35,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_IR",
+          "circuit": "power module from 3.3 V; if powered from 5 V add 10 k/20 k divider; 100 kΩ pull-UP on DO so a disconnected module reads 'absent' (conservative)"
+        },
+        {
+          "component": "Flame module",
+          "signal": "DO (active LOW)",
+          "gpio": 39,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_FLAME",
+          "circuit": "power from 3.3 V; set threshold pot with a safe IR stimulus (TV remote), not a flame; 100 kΩ pull-DOWN on DO so a disconnected module reads 'flame-like' (fail-safe, visible)"
+        },
+        {
+          "component": "MG995/MG996R servo",
+          "signal": "PWM",
+          "gpio": 13,
+          "dir": "out",
+          "supply": "EXTERNAL 5–6 V ≥2.5 A (stall)",
+          "level": "3.3 V PWM",
+          "symbol": "PIN_SERVO",
+          "circuit": "servo V+ from external supply; common GND with ESP32; 470–1000 µF bulk cap at servo; never from ESP32 5V/3V3 pin"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "R",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_R",
+          "circuit": "220 Ω series"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "G",
+          "gpio": 33,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_G",
+          "circuit": "220 Ω series (green/blue: 100–150 Ω for brightness)"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "B",
+          "gpio": 32,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_B",
+          "circuit": "220 Ω series"
+        },
+        {
+          "component": "BOOT button (on board)",
+          "signal": "manual stop",
+          "gpio": 0,
+          "dir": "in",
+          "supply": "board",
+          "level": "active LOW",
+          "symbol": "PIN_MANUAL_STOP",
+          "circuit": "on-board button; read only after boot",
+          "allowStrapping": true
+        }
+      ],
+      "board": "esp32"
+    },
+    "ENV": {
+      "description": "Environmental evidence: DHT22, MQ135 (relative), LDR, PIR, flame, potentiometer test input, RGB.",
+      "caps": [
+        "DHT22",
+        "MQ135",
+        "LDR",
+        "PIR",
+        "FLAME",
+        "POT",
+        "RGB"
+      ],
+      "pins": [
+        {
+          "component": "DHT22",
+          "signal": "DATA",
+          "gpio": 4,
+          "dir": "io",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_DHT",
+          "circuit": "10 kΩ pull-up if bare sensor"
+        },
+        {
+          "component": "MQ135",
+          "signal": "AO",
+          "gpio": 36,
+          "dir": "in",
+          "supply": "5 V heater (~150 mA)",
+          "level": "0–5 V → 0–3.3 V",
+          "symbol": "PIN_MQ135",
+          "circuit": "divider AO—10 kΩ—GPIO36—20 kΩ—GND; 24–48 h burn-in + 2 min warm-up; raw/relative only"
+        },
+        {
+          "component": "LDR",
+          "signal": "divider mid-point",
+          "gpio": 39,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_LDR",
+          "circuit": "3.3 V—LDR—GPIO39—10 kΩ—GND"
+        },
+        {
+          "component": "HC-SR501 PIR",
+          "signal": "OUT",
+          "gpio": 27,
+          "dir": "in",
+          "supply": "5 V (onboard 3.3 V regulator)",
+          "level": "3.3 V output",
+          "symbol": "PIN_PIR",
+          "circuit": "direct; ~60 s warm-up; motion ≠ identity"
+        },
+        {
+          "component": "Flame module",
+          "signal": "DO (active LOW)",
+          "gpio": 35,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_FLAME",
+          "circuit": "direct; 100 kΩ pull-DOWN on DO so a disconnected module reads 'flame-like' (fail-safe, visible)"
+        },
+        {
+          "component": "10 kΩ potentiometer",
+          "signal": "wiper",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_POT",
+          "circuit": "ends to 3.3 V/GND; OPERATOR TEST INPUT only"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "R",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_R",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "G",
+          "gpio": 33,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_G",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "B",
+          "gpio": 32,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_B",
+          "circuit": "220 Ω"
+        }
+      ],
+      "board": "esp32"
+    },
+    "WET": {
+      "description": "Wetness & probe temperature: rain, soil moisture (intermittently powered), DS18B20, presence, RGB.",
+      "caps": [
+        "RAIN",
+        "SOIL",
+        "DS18B20",
+        "ULTRASONIC",
+        "IR",
+        "RGB"
+      ],
+      "pins": [
+        {
+          "component": "Rain-drop module",
+          "signal": "AO",
+          "gpio": 36,
+          "dir": "in",
+          "supply": "3.3 V via PWR_WET",
+          "level": "analog",
+          "symbol": "PIN_RAIN",
+          "circuit": "module VCC from GPIO16 switch (≤10 mA) — or via PNP/MOSFET if the module draws more"
+        },
+        {
+          "component": "Soil-moisture module",
+          "signal": "AO",
+          "gpio": 39,
+          "dir": "in",
+          "supply": "3.3 V via PWR_WET",
+          "level": "analog",
+          "symbol": "PIN_SOIL",
+          "circuit": "powered only while sampling to limit electrolysis; relative values in a test medium"
+        },
+        {
+          "component": "Wet-sensor power switch",
+          "signal": "VCC enable",
+          "gpio": 16,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "active HIGH",
+          "symbol": "PIN_WET_PWR",
+          "circuit": "measure module current first; use a transistor switch if >10 mA"
+        },
+        {
+          "component": "DS18B20 probe",
+          "signal": "DQ",
+          "gpio": 4,
+          "dir": "io",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_ONEWIRE",
+          "circuit": "4.7 kΩ pull-up DQ→3.3 V (not parasite power)"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "TRIG",
+          "gpio": 26,
+          "dir": "out",
+          "supply": "5 V",
+          "level": "3.3 V drive",
+          "symbol": "PIN_US_TRIG",
+          "circuit": "direct"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "ECHO",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "5 V",
+          "level": "5 V → 3.3 V",
+          "symbol": "PIN_US_ECHO",
+          "circuit": "10 k/20 k divider"
+        },
+        {
+          "component": "IR obstacle module",
+          "signal": "DO",
+          "gpio": 35,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_IR",
+          "circuit": "direct; 100 kΩ pull-UP on DO so a disconnected module reads 'absent' (conservative)"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "R",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_R",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "G",
+          "gpio": 33,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_G",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "B",
+          "gpio": 32,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_B",
+          "circuit": "220 Ω"
+        }
+      ],
+      "board": "esp32"
+    },
+    "ACT": {
+      "description": "Actuation / location / storage: relay→pump, servo gate, vibration motor, GPS, SD buffer, potentiometer, RGB.",
+      "caps": [
+        "RELAY",
+        "PUMP",
+        "SERVO",
+        "VIBRATION",
+        "GPS",
+        "SD",
+        "POT",
+        "RGB"
+      ],
+      "pins": [
+        {
+          "component": "Relay module (5 V, optocoupler)",
+          "signal": "IN",
+          "gpio": 27,
+          "dir": "out",
+          "supply": "5 V (JD-VCC)",
+          "level": "active LOW (verify)",
+          "symbol": "PIN_RELAY",
+          "circuit": "3.3 V HIGH may not fully turn a 5 V opto input OFF: drive IN through an NPN (2N2222/BC547, 1 kΩ base) or a 3.3 V-compatible module; verify polarity before connecting the pump"
+        },
+        {
+          "component": "R385 pump (via relay)",
+          "signal": "load",
+          "gpio": null,
+          "dir": "none",
+          "supply": "EXTERNAL 6–12 V ≥1.5 A",
+          "level": "—",
+          "symbol": "—",
+          "circuit": "relay COM/NO in series with pump +; 1N5819/1N4007 flyback diode across pump; never run dry; max 30 s per command"
+        },
+        {
+          "component": "MG995/MG996R servo",
+          "signal": "PWM",
+          "gpio": 13,
+          "dir": "out",
+          "supply": "EXTERNAL 5–6 V ≥2.5 A",
+          "level": "3.3 V PWM",
+          "symbol": "PIN_SERVO",
+          "circuit": "common GND; bulk cap"
+        },
+        {
+          "component": "Coin vibration motor",
+          "signal": "driver gate/base",
+          "gpio": 17,
+          "dir": "out",
+          "supply": "5 V via transistor",
+          "level": "active HIGH",
+          "symbol": "PIN_VIBRATION",
+          "circuit": "NPN/logic MOSFET low-side, 1 kΩ base, 1N4148 flyback, 100 nF across motor — never from GPIO"
+        },
+        {
+          "component": "NEO-6M GPS",
+          "signal": "TX → ESP RX2",
+          "gpio": 16,
+          "dir": "in",
+          "supply": "3.3–5 V (module regulator)",
+          "level": "3.3 V UART",
+          "symbol": "PIN_GPS_RX",
+          "circuit": "9600 baud; ESP TX→GPS RX not required; needs sky view (indoor = no fix)"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "per module (3.3 V or 5 V with onboard regulator + level shifter)",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "a socket/module is REQUIRED — the card cannot connect to bare GPIO"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "MISO",
+          "gpio": 19,
+          "dir": "in",
+          "bus": "SPI_VSPI",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "some 5 V modules do not tri-state MISO — do not share with RC522 on such modules"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "MOSI",
+          "gpio": 23,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "direct"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "CS",
+          "gpio": 4,
+          "dir": "out",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SD_CS",
+          "circuit": "direct; 10 kΩ pull-up recommended"
+        },
+        {
+          "component": "10 kΩ potentiometer",
+          "signal": "wiper",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_POT",
+          "circuit": "operator test input"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "R",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_R",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "G",
+          "gpio": 33,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_G",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "B",
+          "gpio": 32,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_B",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "BOOT button (on board)",
+          "signal": "manual stop",
+          "gpio": 0,
+          "dir": "in",
+          "supply": "board",
+          "level": "active LOW",
+          "symbol": "PIN_MANUAL_STOP",
+          "circuit": "on-board",
+          "allowStrapping": true
+        }
+      ],
+      "board": "esp32"
+    },
+    "FULL_A": {
+      "description": "FULL simultaneous design, board A (sensing). Pairs with FULL_B on a SECOND ESP32 (not in the supplied inventory). Both bind to PUMP-017.",
+      "caps": [
+        "RFID",
+        "DHT22",
+        "ULTRASONIC",
+        "IR",
+        "FLAME",
+        "MQ135",
+        "RAIN",
+        "SOIL",
+        "DS18B20"
+      ],
+      "pins": [
+        {
+          "component": "RC522 RFID",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V ONLY",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "MISO",
+          "gpio": 19,
+          "dir": "in",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "MOSI",
+          "gpio": 23,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "SDA/SS",
+          "gpio": 21,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_SS",
+          "circuit": "direct"
+        },
+        {
+          "component": "RC522 RFID",
+          "signal": "RST",
+          "gpio": 22,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_RST",
+          "circuit": "direct"
+        },
+        {
+          "component": "DHT22",
+          "signal": "DATA",
+          "gpio": 4,
+          "dir": "io",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_DHT",
+          "circuit": "10 kΩ pull-up if bare"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "TRIG",
+          "gpio": 26,
+          "dir": "out",
+          "supply": "5 V",
+          "level": "3.3 V drive",
+          "symbol": "PIN_US_TRIG",
+          "circuit": "direct"
+        },
+        {
+          "component": "HC-SR04",
+          "signal": "ECHO",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "5 V",
+          "level": "5 V → 3.3 V",
+          "symbol": "PIN_US_ECHO",
+          "circuit": "10 k/20 k divider"
+        },
+        {
+          "component": "IR obstacle module",
+          "signal": "DO",
+          "gpio": 35,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_IR",
+          "circuit": "direct; 100 kΩ pull-UP on DO so a disconnected module reads 'absent' (conservative)"
+        },
+        {
+          "component": "Flame module",
+          "signal": "DO",
+          "gpio": 39,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_FLAME",
+          "circuit": "direct; 100 kΩ pull-DOWN on DO so a disconnected module reads 'flame-like' (fail-safe, visible)"
+        },
+        {
+          "component": "MQ135",
+          "signal": "AO",
+          "gpio": 36,
+          "dir": "in",
+          "supply": "5 V heater",
+          "level": "0–5 V → 3.3 V",
+          "symbol": "PIN_MQ135",
+          "circuit": "10 k/20 k divider"
+        },
+        {
+          "component": "Rain-drop module",
+          "signal": "AO",
+          "gpio": 32,
+          "dir": "in",
+          "supply": "3.3 V via PWR_WET",
+          "level": "analog",
+          "symbol": "PIN_RAIN",
+          "circuit": "intermittent power"
+        },
+        {
+          "component": "Soil-moisture module",
+          "signal": "AO",
+          "gpio": 33,
+          "dir": "in",
+          "supply": "3.3 V via PWR_WET",
+          "level": "analog",
+          "symbol": "PIN_SOIL",
+          "circuit": "intermittent power"
+        },
+        {
+          "component": "Wet-sensor power switch",
+          "signal": "VCC enable",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "active HIGH",
+          "symbol": "PIN_WET_PWR",
+          "circuit": "transistor if >10 mA"
+        },
+        {
+          "component": "DS18B20 probe",
+          "signal": "DQ",
+          "gpio": 27,
+          "dir": "io",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_ONEWIRE",
+          "circuit": "4.7 kΩ pull-up"
+        }
+      ],
+      "board": "esp32"
+    },
+    "FULL_B": {
+      "description": "FULL simultaneous design, board B (actuation/location/storage/indication). Second ESP32 is an ADDITIONAL part.",
+      "caps": [
+        "RELAY",
+        "PUMP",
+        "SERVO",
+        "VIBRATION",
+        "GPS",
+        "SD",
+        "RGB",
+        "POT",
+        "PIR",
+        "LDR"
+      ],
+      "pins": [
+        {
+          "component": "Relay module (5 V, optocoupler)",
+          "signal": "IN",
+          "gpio": 27,
+          "dir": "out",
+          "supply": "5 V (JD-VCC)",
+          "level": "active LOW (verify)",
+          "symbol": "PIN_RELAY",
+          "circuit": "NPN driver recommended (see ACT)"
+        },
+        {
+          "component": "R385 pump (via relay)",
+          "signal": "load",
+          "gpio": null,
+          "dir": "none",
+          "supply": "EXTERNAL 6–12 V ≥1.5 A",
+          "level": "—",
+          "symbol": "—",
+          "circuit": "flyback diode; max 30 s; never dry"
+        },
+        {
+          "component": "MG995/MG996R servo",
+          "signal": "PWM",
+          "gpio": 13,
+          "dir": "out",
+          "supply": "EXTERNAL 5–6 V ≥2.5 A",
+          "level": "3.3 V PWM",
+          "symbol": "PIN_SERVO",
+          "circuit": "common GND; bulk cap"
+        },
+        {
+          "component": "Coin vibration motor",
+          "signal": "driver",
+          "gpio": 17,
+          "dir": "out",
+          "supply": "5 V via transistor",
+          "level": "active HIGH",
+          "symbol": "PIN_VIBRATION",
+          "circuit": "NPN + flyback"
+        },
+        {
+          "component": "NEO-6M GPS",
+          "signal": "TX → ESP RX2",
+          "gpio": 16,
+          "dir": "in",
+          "supply": "3.3–5 V",
+          "level": "3.3 V UART",
+          "symbol": "PIN_GPS_RX",
+          "circuit": "9600 baud"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "module required"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "MISO",
+          "gpio": 19,
+          "dir": "in",
+          "bus": "SPI_VSPI",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "direct"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "MOSI",
+          "gpio": 23,
+          "dir": "out",
+          "bus": "SPI_VSPI",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "direct"
+        },
+        {
+          "component": "microSD module (SPI)",
+          "signal": "CS",
+          "gpio": 4,
+          "dir": "out",
+          "supply": "module",
+          "level": "3.3 V",
+          "symbol": "PIN_SD_CS",
+          "circuit": "10 kΩ pull-up"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "R",
+          "gpio": 25,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_R",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "G",
+          "gpio": 33,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_G",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "RGB LED (common anode)",
+          "signal": "B",
+          "gpio": 32,
+          "dir": "out",
+          "supply": "anode → 3.3 V",
+          "level": "active LOW",
+          "symbol": "PIN_LED_B",
+          "circuit": "220 Ω"
+        },
+        {
+          "component": "10 kΩ potentiometer",
+          "signal": "wiper",
+          "gpio": 34,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_POT",
+          "circuit": "operator test input"
+        },
+        {
+          "component": "HC-SR501 PIR",
+          "signal": "OUT",
+          "gpio": 35,
+          "dir": "in",
+          "supply": "5 V",
+          "level": "3.3 V",
+          "symbol": "PIN_PIR",
+          "circuit": "direct"
+        },
+        {
+          "component": "LDR",
+          "signal": "divider",
+          "gpio": 39,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_LDR",
+          "circuit": "LDR + 10 kΩ divider"
+        },
+        {
+          "component": "BOOT button (on board)",
+          "signal": "manual stop",
+          "gpio": 0,
+          "dir": "in",
+          "supply": "board",
+          "level": "active LOW",
+          "symbol": "PIN_MANUAL_STOP",
+          "circuit": "on-board",
+          "allowStrapping": true
+        }
+      ],
+      "board": "esp32"
+    },
+    "NEWRRO_MIN": {
+      "board": "esp32s3",
+      "description": "Newrro kit, minimum: RC522 + DS18B20 + onboard LDR + onboard RGB + IR presence. PUMP-017 policy must be set to RFID_MATCH + PRESENCE (no flame sensor).",
+      "caps": [
+        "RFID",
+        "DS18B20",
+        "LDR",
+        "RGB",
+        "IR"
+      ],
+      "defines": {
+        "TM_RGB_ACTIVE_HIGH": 1,
+        "TM_S3_PULLS": 1
+      },
+      "pins": [
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "3V3 supply",
+          "gpio": null,
+          "dir": "none",
+          "supply": "3.3 V (port pin 1)",
+          "level": "—",
+          "symbol": "—",
+          "circuit": "plug RC522 into the 8-pin RFID port; RC522 must NOT get 5 V"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "RST",
+          "gpio": 15,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_RST",
+          "circuit": "board trace (port label IO15)"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "MISO",
+          "gpio": 16,
+          "dir": "in",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "board trace (IO16) — function inferred from RC522 pin order, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "MOSI",
+          "gpio": 17,
+          "dir": "out",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "board trace (IO17) — inferred, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "board trace (IO18) — inferred, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "SDA/SS",
+          "gpio": 3,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_SS",
+          "circuit": "board trace (IO3); GPIO3 is a strapping pin chosen by the board maker — output only after boot",
+          "allowStrapping": true
+        },
+        {
+          "component": "DS18B20 probe (TEMP port)",
+          "signal": "DQ",
+          "gpio": 1,
+          "dir": "io",
+          "supply": "5 V port pin (probe works 3–5.5 V)",
+          "level": "3.3 V (board pull-up — verify)",
+          "symbol": "PIN_ONEWIRE",
+          "circuit": "already plugged into the TEMP port in your photo; board has the pull-up resistor"
+        },
+        {
+          "component": "LDR (onboard)",
+          "signal": "divider",
+          "gpio": 4,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_LDR",
+          "circuit": "soldered on the breakout board with its resistor"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "R",
+          "gpio": 5,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_R",
+          "circuit": "onboard; colour order inferred — check with !led r"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "G",
+          "gpio": 6,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_G",
+          "circuit": "onboard"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "B",
+          "gpio": 7,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_B",
+          "circuit": "onboard"
+        },
+        {
+          "component": "IR obstacle module",
+          "signal": "OUT (active LOW)",
+          "gpio": 12,
+          "dir": "in",
+          "supply": "5 V from the port",
+          "level": "MEASURE OUT first (see guide step 4)",
+          "symbol": "PIN_IR",
+          "circuit": "3-pin port 5V/IO12/GND; internal pull-up enabled; if OUT measures above 3.6 V use a 10k/20k divider"
+        }
+      ]
+    },
+    "NEWRRO_FULL": {
+      "board": "esp32s3",
+      "description": "Newrro kit + flame module (IO13) + DHT22 (IO14): satisfies the default PUMP-017 custody policy (RFID_MATCH + PRESENCE + NO_FLAME).",
+      "caps": [
+        "RFID",
+        "DS18B20",
+        "LDR",
+        "RGB",
+        "IR",
+        "FLAME",
+        "DHT22"
+      ],
+      "defines": {
+        "TM_RGB_ACTIVE_HIGH": 1,
+        "TM_S3_PULLS": 1
+      },
+      "pins": [
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "3V3 supply",
+          "gpio": null,
+          "dir": "none",
+          "supply": "3.3 V (port pin 1)",
+          "level": "—",
+          "symbol": "—",
+          "circuit": "plug RC522 into the 8-pin RFID port; RC522 must NOT get 5 V"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "RST",
+          "gpio": 15,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_RST",
+          "circuit": "board trace (port label IO15)"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "MISO",
+          "gpio": 16,
+          "dir": "in",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MISO",
+          "circuit": "board trace (IO16) — function inferred from RC522 pin order, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "MOSI",
+          "gpio": 17,
+          "dir": "out",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_MOSI",
+          "circuit": "board trace (IO17) — inferred, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "SCK",
+          "gpio": 18,
+          "dir": "out",
+          "bus": "SPI_NEWRRO",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_SPI_SCK",
+          "circuit": "board trace (IO18) — inferred, verify"
+        },
+        {
+          "component": "RC522 RFID (Newrro RFID port)",
+          "signal": "SDA/SS",
+          "gpio": 3,
+          "dir": "out",
+          "supply": "3.3 V",
+          "level": "3.3 V",
+          "symbol": "PIN_RFID_SS",
+          "circuit": "board trace (IO3); GPIO3 is a strapping pin chosen by the board maker — output only after boot",
+          "allowStrapping": true
+        },
+        {
+          "component": "DS18B20 probe (TEMP port)",
+          "signal": "DQ",
+          "gpio": 1,
+          "dir": "io",
+          "supply": "5 V port pin (probe works 3–5.5 V)",
+          "level": "3.3 V (board pull-up — verify)",
+          "symbol": "PIN_ONEWIRE",
+          "circuit": "already plugged into the TEMP port in your photo; board has the pull-up resistor"
+        },
+        {
+          "component": "LDR (onboard)",
+          "signal": "divider",
+          "gpio": 4,
+          "dir": "in",
+          "supply": "3.3 V",
+          "level": "analog",
+          "symbol": "PIN_LDR",
+          "circuit": "soldered on the breakout board with its resistor"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "R",
+          "gpio": 5,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_R",
+          "circuit": "onboard; colour order inferred — check with !led r"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "G",
+          "gpio": 6,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_G",
+          "circuit": "onboard"
+        },
+        {
+          "component": "RGB LED (onboard, common cathode)",
+          "signal": "B",
+          "gpio": 7,
+          "dir": "out",
+          "supply": "board",
+          "level": "active HIGH",
+          "symbol": "PIN_LED_B",
+          "circuit": "onboard"
+        },
+        {
+          "component": "IR obstacle module",
+          "signal": "OUT (active LOW)",
+          "gpio": 12,
+          "dir": "in",
+          "supply": "5 V from the port",
+          "level": "MEASURE OUT first (see guide step 4)",
+          "symbol": "PIN_IR",
+          "circuit": "3-pin port 5V/IO12/GND; internal pull-up enabled; if OUT measures above 3.6 V use a 10k/20k divider"
+        },
+        {
+          "component": "Flame module",
+          "signal": "DO (active LOW)",
+          "gpio": 13,
+          "dir": "in",
+          "supply": "5 V from the port",
+          "level": "MEASURE DO first",
+          "symbol": "PIN_FLAME",
+          "circuit": "3-pin port 5V/IO13/GND; internal pull-down = fail-safe; if DO measures above 3.6 V use a 10k/20k divider"
+        },
+        {
+          "component": "DHT22",
+          "signal": "DATA",
+          "gpio": 14,
+          "dir": "io",
+          "supply": "5 V from the port",
+          "level": "open-drain (safe with 3.3 V pull-up only)",
+          "symbol": "PIN_DHT",
+          "circuit": "3-pin port 5V/IO14/GND; module pull-up to 5 V would give 5 V on DATA — prefer a bare sensor with 10 kΩ to 3V3"
+        }
+      ]
+    }
+  },
+  "boards": {
+    "esp32": {
+      "name": "ESP32-DevKitC (ESP32-WROOM-32, classic ESP32)",
+      "logic": "3.3 V, GPIO NOT 5 V tolerant",
+      "forbidden": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "inputOnly": [
+        34,
+        35,
+        36,
+        39
+      ],
+      "strapping": [
+        0,
+        2,
+        5,
+        12,
+        15
+      ],
+      "adc1": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        39
+      ],
+      "adc2": [
+        0,
+        2,
+        4,
+        12,
+        13,
+        14,
+        15,
+        25,
+        26,
+        27
+      ],
+      "notes": "ADC2 cannot be used while Wi-Fi is active: every analog input is on ADC1. GPIO12 strapping sets flash voltage — never pulled high at boot. Input-only pins have no internal pull-ups."
+    },
+    "esp32s3": {
+      "name": "Newrro controller with ESP32-S3 (inferred from IO45–IO48 labels — verify with the chip-id step)",
+      "logic": "3.3 V, GPIO NOT 5 V tolerant",
+      "forbidden": [
+        19,
+        20,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37
+      ],
+      "inputOnly": [],
+      "strapping": [
+        0,
+        3,
+        45,
+        46
+      ],
+      "adc1": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "adc2": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "notes": "ESP32-S3: GPIO19/20 are native USB, GPIO26–32 SPI flash, GPIO33–37 octal PSRAM on some modules. Analog inputs must be on ADC1 (GPIO1–10). Pins are fixed by the Newrro breakout board silkscreen."
+    }
+  }
+}

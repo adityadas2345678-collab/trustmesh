@@ -1,0 +1,7 @@
+{
+  "name": "@trustmesh/serial-bridge",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": { "serialport": "13.0.0", "@serialport/parser-readline": "13.0.0" }
+}
