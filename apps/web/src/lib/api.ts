@@ -3,6 +3,7 @@ import { createWalletClient, custom, type Hex } from "viem";
 import { AssetLifecycleAbi, buildAction, type ActionName } from "@trustmesh/shared";
 
 export interface User { address: string; kind: "dev" | "wallet"; csrf: string; name: string; roles: string[]; devIndex: number | null; org: string | null }
+export const HOSTED = import.meta.env.VITE_HOSTED === "true";
 export class ApiError extends Error { constructor(public code: string, message: string, public status: number) { super(message); } }
 
 let csrf = "";
@@ -35,7 +36,19 @@ if (typeof window !== "undefined") { lastMsg = Date.now(); window.setInterval(wa
 const TYPES = ["tx", "job", "chain", "asset", "transfer", "incident", "device", "telemetry", "verification", "pipeline", "challenge", "command", "credential", "resync", "hello", "fault", "indexer", "sim", "hb"];
 let lastId = "";
 let retry = 1000;
+let hostedSubscribed = false;
 function ensureStream() {
+  const hostedBus = (globalThis as any).__TM_BUS__;
+  if (hostedBus) {
+    // Hosted mode: the backend runs in this tab — subscribe to its event bus directly (no network).
+    if (!hostedSubscribed) {
+      hostedSubscribed = true;
+      hostedBus.subscribe((e: any) => { lastMsg = Date.now(); handlers.forEach((h) => h(e.type, { ...(e.data ?? {}), at: e.at })); });
+      liveStatus.connected = true; liveStatus.listeners.forEach((l) => l());
+      setInterval(() => { lastMsg = Date.now(); }, 3000);
+    }
+    return;
+  }
   if (es) return;
   const set = (v: boolean) => { liveStatus.connected = v; liveStatus.listeners.forEach((l) => l()); };
   // Native EventSource gives up permanently after a non-200 (e.g. proxy 502 while the API restarts), so we

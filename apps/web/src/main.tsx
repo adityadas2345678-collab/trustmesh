@@ -2,7 +2,7 @@ import { StrictMode, useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, NavLink, Route, Routes, useLocation, useNavigate, Link } from "react-router-dom";
 import "./index.css";
-import { api, post, setCsrf, SessionCtx, useSession, useLiveEvent, useLiveConnected, useData, walletLogin, hasWallet, short, type User } from "./lib/api";
+import { HOSTED, api, post, setCsrf, SessionCtx, useSession, useLiveEvent, useLiveConnected, useData, walletLogin, hasWallet, short, type User } from "./lib/api";
 import { Badge, ToastHost, useToast, HashGlyph } from "./ui";
 import { Overview } from "./pages/Overview";
 import { Assets, Passport, PublicPassport } from "./pages/Assets";
@@ -53,12 +53,12 @@ function Header() {
   const nav = useNavigate();
   const simple = isSimple(useLocation().pathname);
   return (
-    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-ink-800 bg-ink-950/85 px-5 py-2.5 backdrop-blur">
+    <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-ink-800 bg-ink-950/85 px-3 py-2.5 backdrop-blur sm:px-5">
       {simple ? (
         <div className="flex flex-1 items-center gap-2">
           <Badge tone={st?.ok ? "verify" : "crit"} dot>{st?.ok ? "Blockchain running" : "Blockchain offline"}</Badge>
           <KitBadge />
-          <span className="hidden text-xs text-ink-400 sm:inline">private demo network on the presenter's laptop</span>
+          <span className="hidden text-xs text-ink-400 sm:inline">{HOSTED ? "private demo blockchain running in your browser" : "private demo network on the presenter's laptop"}</span>
         </div>
       ) : (
         <>
@@ -73,7 +73,7 @@ function Header() {
       )}
       {user && (
         <div className="flex shrink-0 items-center gap-2">
-          <div className="text-right leading-tight"><div className="text-xs font-medium">{user.name}</div><div className="mono text-[10px] text-ink-400">{simple ? "demo account" : `${user.kind === "dev" ? "dev identity" : "wallet"} · ${short(user.address, 4)}`}</div></div>
+          <div className="hidden text-right leading-tight sm:block"><div className="text-xs font-medium">{user.name}</div><div className="mono text-[10px] text-ink-400">{simple ? "demo account" : `${user.kind === "dev" ? "dev identity" : "wallet"} · ${short(user.address, 4)}`}</div></div>
           <button className="btn-ghost !px-2 !py-1 text-xs" onClick={async () => { await post("/api/v1/auth/logout"); setCsrf(""); await refresh(); nav("/login"); }}>{simple ? "Change role" : "Switch"}</button>
         </div>
       )}
@@ -186,10 +186,10 @@ function Login() {
             </div>
           </>
         )}
-        <div className="card mt-6 flex flex-wrap items-center justify-between gap-4 p-5">
+        {!HOSTED && <div className="card mt-6 flex flex-wrap items-center justify-between gap-4 p-5">
           <div><div className="font-medium">Browser wallet</div><div className="text-xs text-ink-400">Sign-in with nonce, domain, chain and expiry checks. Transactions are signed in your wallet. {hasWallet() ? "" : "No wallet extension detected."}</div></div>
           <button className="btn-primary" disabled={!hasWallet() || !manifest || !!busy} onClick={() => go(() => walletLogin(manifest), "wallet")}>{busy === "wallet" ? "Waiting for wallet…" : "Connect wallet"}</button>
-        </div>
+        </div>}
         <p className="mt-6 text-center text-xs text-ink-400">Public passports are readable without signing in at <code className="mono">/p/&lt;asset-id&gt;</code>.</p>
       </div>
     </div>
@@ -245,4 +245,32 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<StrictMode><BrowserRouter><ToastHost><App /></ToastHost></BrowserRouter></StrictMode>);
+const root = createRoot(document.getElementById("root")!);
+const render = () => root.render(<StrictMode><BrowserRouter><ToastHost><App /></ToastHost></BrowserRouter></StrictMode>);
+
+function BootScreen({ step, error }: { step: string; error?: string }) {
+  return (
+    <div className="mesh-bg grid min-h-full place-items-center p-6 text-center">
+      <div className="max-w-md">
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-2xl bg-ink-800 text-4xl shadow-[0_0_60px_-10px] shadow-signal">{error ? "⚠️" : <span className="animate-pulse">⛓</span>}</div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-signal">TRUSTMESH · live demo</div>
+        <h1 className="mt-2 text-2xl font-semibold">{error ? "Couldn't start the demo" : "Setting up your private demo…"}</h1>
+        <p className="mt-3 text-sm text-ink-300">{error ?? step}</p>
+        {!error && <div className="mx-auto mt-5 h-1.5 w-56 overflow-hidden rounded-full bg-ink-800"><div className="h-full w-1/3 animate-[slidein_1s_ease-in-out_infinite_alternate] rounded-full bg-signal" style={{ animation: "boot 1.2s ease-in-out infinite alternate" }} /></div>}
+        <p className="mt-6 text-xs text-ink-400">The real smart contracts run on a blockchain inside this browser tab — every visitor gets their own, nothing is installed and nothing leaves your device.</p>
+        <style>{"@keyframes boot{from{transform:translateX(-10%)}to{transform:translateX(220%)}}"}</style>
+      </div>
+    </div>
+  );
+}
+
+if (import.meta.env.VITE_HOSTED === "true") {
+  root.render(<BootScreen step="Loading…" />);
+  import("./hosted/polyfills")
+    .then(() => import("./hosted/engine"))
+    .then((m) => m.boot((step) => root.render(<BootScreen step={step} />)))
+    .then(() => { if (location.pathname === "/") history.replaceState(null, "", "/demo"); render(); })
+    .catch((e) => { console.error(e); root.render(<BootScreen step="" error={String(e?.message ?? e)} />); });
+} else {
+  render();
+}

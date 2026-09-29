@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import {
-  createPublicClient, createWalletClient, http, defineChain, BaseError, ContractFunctionRevertedError,
+  createPublicClient, createWalletClient, http, custom, defineChain, BaseError, ContractFunctionRevertedError,
   type Account, type Hex, type Address, type PublicClient,
 } from "viem";
 import { mnemonicToAccount, privateKeyToAccount } from "viem/accounts";
@@ -16,7 +16,14 @@ export interface Manifest {
   deploymentBlock: number; genesisHash: Hex; fingerprint: string; admin: Address; oracle: Address; deployedAt: string;
 }
 
+/** Hosted (in-browser) mode: an EIP-1193 provider and the manifest are injected instead of RPC URL + file. */
+const G = globalThis as { __TM_PROVIDER__?: { request: (a: any) => Promise<any> }; __TM_MANIFEST__?: Manifest; __TM_HOSTED__?: boolean };
+const transport = () => (G.__TM_PROVIDER__ ? custom(G.__TM_PROVIDER__, { retryCount: 0 }) : http(config.rpcUrl, { retryCount: 0, timeout: 8000 }));
+export const isHosted = () => !!G.__TM_HOSTED__;
+
 const HARDHAT_MNEMONIC = "test test test test test test test test test test test junk"; // public test mnemonic
+const hdCache = new Map<number, ReturnType<typeof mnemonicToAccount>>();
+const hd = (i: number) => { let a = hdCache.get(i); if (!a) hdCache.set(i, (a = mnemonicToAccount(HARDHAT_MNEMONIC, { addressIndex: i }))); return a; };
 
 export class Chain {
   manifest: Manifest | null = null;
@@ -28,11 +35,11 @@ export class Chain {
   constructor(private db: DB) {
     this.reloadManifest();
     this.chainDef = defineChain({ id: this.manifest?.chainId ?? 31337, name: "TrustMesh Local EVM", nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 }, rpcUrls: { default: { http: [config.rpcUrl] } } });
-    this.pub = createPublicClient({ chain: this.chainDef, cacheTime: 0, pollingInterval: 250, transport: http(config.rpcUrl, { retryCount: 0, timeout: 8000 }) }) as PublicClient;
+    this.pub = createPublicClient({ chain: this.chainDef, cacheTime: 0, pollingInterval: 250, transport: transport() }) as PublicClient;
   }
 
   reloadManifest() {
-    this.manifest = existsSync(config.manifestPath) ? JSON.parse(readFileSync(config.manifestPath, "utf8")) : null;
+    this.manifest = G.__TM_MANIFEST__ ?? (existsSync(config.manifestPath) ? JSON.parse(readFileSync(config.manifestPath, "utf8")) : null);
     return this.manifest;
   }
   get fingerprint() { return this.manifest?.fingerprint ?? "none"; }
@@ -41,9 +48,9 @@ export class Chain {
   /** Dev signer adapter — index-derived accounts from the public Hardhat mnemonic. Local chain only. */
   devAccount(index: number): Account {
     if (!this.devSignerEnabled) throw Object.assign(new Error("Development signer disabled"), { statusCode: 403, code: "DEV_SIGNER_DISABLED" });
-    return mnemonicToAccount(HARDHAT_MNEMONIC, { addressIndex: index });
+    return hd(index);
   }
-  devAddress(index: number): Address { return mnemonicToAccount(HARDHAT_MNEMONIC, { addressIndex: index }).address; }
+  devAddress(index: number): Address { return hd(index).address; }
   oracleAccount(): Account { return config.oracleKey ? privateKeyToAccount(config.oracleKey) : this.devAccount(1); }
   adminAccount(): Account { return this.devAccount(0); }
 
@@ -93,13 +100,14 @@ export class Chain {
 
   private async sendNow(account: Account, name: ContractName, fn: string, args: unknown[], label?: string, onHash?: (h: Hex) => void) {
     this.requireOk();
-    const wallet = createWalletClient({ account, chain: this.chainDef, transport: http(config.rpcUrl) });
+    const wallet = createWalletClient({ account, chain: this.chainDef, transport: transport() });
     let request;
     try {
       // Simulate against the pending block: on an idle chain the latest block can be minutes old.
       ({ request } = await this.pub.simulateContract({ account, address: this.addr(name), abi: ABIS[name] as any, functionName: fn, args, blockTag: "pending" }));
     } catch (e) { throw contractError(e); }
-    const hash = await wallet.writeContract(request as any);
+    // Hosted (in-browser) chain: skip the second gas-estimation EVM run; the dry-run above already validated the call.
+    const hash = await wallet.writeContract((isHosted() ? { ...(request as any), gas: 6_000_000n } : request) as any);
     this.db.prepare("INSERT OR IGNORE INTO chain_txs(hash,from_addr,contract,fn,args_json,status,created_at,fingerprint,label) VALUES(?,?,?,?,?,?,?,?,?)")
       .run(hash, account.address.toLowerCase(), name, fn, jsonArgs(args), "submitted", now(), this.fingerprint, label ?? null);
     onHash?.(hash);
@@ -109,7 +117,8 @@ export class Chain {
 
   /** Waits for a receipt and records it. Also used for browser-wallet transactions and crash reconciliation. */
   async track(hash: Hex, timeoutMs = 30000) {
-    const r = await this.pub.waitForTransactionReceipt({ hash, timeout: timeoutMs });
+    // Auto-mining chains usually have the receipt immediately; only poll when they don't.
+    const r = (await this.pub.getTransactionReceipt({ hash }).catch(() => null)) ?? (await this.pub.waitForTransactionReceipt({ hash, timeout: timeoutMs }));
     const status = r.status === "success" ? "confirmed" : "reverted";
     this.db.prepare("UPDATE chain_txs SET status=?, block_number=?, gas_used=?, confirmed_at=? WHERE hash=?").run(status, Number(r.blockNumber), r.gasUsed.toString(), now(), hash);
     bus.publish("tx", { hash, status, blockNumber: Number(r.blockNumber) });

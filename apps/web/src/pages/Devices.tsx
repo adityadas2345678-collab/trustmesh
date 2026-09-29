@@ -4,6 +4,8 @@ import { useData, useSession, post, ago, fmtTime, short } from "../lib/api";
 import { Badge, Card, Table, Act, Modal, Field, Loading, Empty, PageHead, HashGlyph } from "../ui";
 import { Readings, fmtReading } from "./Assets";
 import { SimPanel } from "./Guide";
+import { HOSTED } from "../lib/api";
+import { KitConnect } from "../hosted/KitConnect";
 
 const PROFILES: Record<string, number> = {
   CORE: CAPS.RFID | CAPS.DHT22 | CAPS.ULTRASONIC | CAPS.IR | CAPS.FLAME | CAPS.SERVO | CAPS.RGB,
@@ -27,6 +29,7 @@ export function Devices() {
   return (
     <>
       <PageHead title="Devices & live telemetry" kicker="Authenticated evidence sources">{admin && <button className="btn-primary" onClick={() => setProv(true)}>+ Provision device</button>}</PageHead>
+      {HOSTED && <div className="mb-6"><KitConnect /></div>}
       <Card className="mb-6" title="Simulated device controls" subtitle="Drive SIM-ESP32-017 from the browser (see the Guide for missions)."><SimPanel /></Card>
       <Loading error={devs.error} loading={devs.loading}>
         <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.1.0",
-  "description": "TRUSTMESH — Blockchain-verified physical asset lifecycle (local-first hackathon prototype)",
+  "description": "TRUSTMESH \u2014 Blockchain-verified physical asset lifecycle (local-first hackathon prototype)",
   "engines": {
     "node": ">=22.13 <25"
   },
@@ -32,7 +32,9 @@
     "firmware:build": "node scripts/firmware.mjs build",
     "firmware:test": "node scripts/firmware.mjs test",
     "test:bridge": "python3 tests/bridge_pty_test.py",
-    "firmware:secrets": "node scripts/firmware-secrets.mjs"
+    "firmware:secrets": "node scripts/firmware-secrets.mjs",
+    "deploy:vercel": "node scripts/deploy-vercel.mjs",
+    "test:hosted": "tsx tests/hosted.e2e.ts"
   },
   "devDependencies": {
     "@types/node": "24.19.0",

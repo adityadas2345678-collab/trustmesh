@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { api, post, setCsrf, useSession } from "../lib/api";
+import { HOSTED, api, post, setCsrf, useSession } from "../lib/api";
 import { HashGlyph } from "../ui";
 import { Scene } from "./Simulator";
+import { KitConnect } from "../hosted/KitConnect";
 
 type Log = { icon: string; text: string; who?: string; tx?: string; ok?: boolean };
 const STORE = "trustmesh.demo.v1";
 const read = () => { try { return JSON.parse(localStorage.getItem(STORE) ?? "{}"); } catch { return {}; } };
 
 const REAL_HINT: Record<string, string> = {
-  reset: "Your kit must be switched on and connected (USB bridge running). Hold the RFID tag on the reader and keep the pump — or any object — in front of the IR sensor, then click.",
+  reset: "Your kit must be switched on and connected (USB link open, or the laptop bridge running). Hold the RFID tag on the reader and keep the pump — or any object — in front of the IR sensor, then click.",
   handover: "Keep the tag on the reader and the pump in front of the IR sensor, then click. The real sensors must prove it.",
   alarm: "Click, then within 90 seconds LIFT THE PUMP AWAY from the IR sensor (or point a TV remote at the flame sensor).",
   repair: "Put the pump back in front of the IR sensor and the tag on the reader, then click.",
@@ -130,9 +131,10 @@ export function Demo() {
           <button role="tab" aria-selected={mode === "sim"} onClick={() => switchMode("sim")} className={`rounded-full px-4 py-1.5 transition ${mode === "sim" ? "bg-sim/20 text-ink-100 ring-1 ring-sim/50" : "text-ink-400 hover:text-ink-100"}`}>🧪 Simulated sensor box</button>
           <button role="tab" aria-selected={mode === "real"} onClick={() => switchMode("real")} className={`rounded-full px-4 py-1.5 transition ${mode === "real" ? "bg-signal/20 text-ink-100 ring-1 ring-signal/50" : "text-ink-400 hover:text-ink-100"}`}>🔌 My real hardware kit</button>
         </div>
-        {mode === "real" && (
+        {mode === "real" && HOSTED && <KitConnect />}
+        {mode === "real" && (HOSTED ? st?.sensorOnline : true) && (
           <div className={`rounded-full px-4 py-1.5 text-xs ${st?.sensorOnline ? "bg-verify/10 text-verify" : "bg-warn/10 text-warn"}`}>
-            {st?.sensorOnline ? `● Real kit ESP32-017 connected${st.transport ? ` via ${st.transport === "serial" ? "USB" : st.transport}` : ""}${st.profile ? ` · ${st.profile}` : ""}${st.tagEnrolled ? " · tag enrolled" : " · tag not enrolled yet"}` : "○ Real kit not connected — switch it on, plug USB-C, run the bridge (see the hardware guide PDF)"}
+            {st?.sensorOnline ? `● Real kit ESP32-017 connected${st.transport ? ` via ${["serial", "usb"].includes(st.transport) ? "USB" : st.transport === "wifi" ? "Wi-Fi" : st.transport}` : ""}${st.profile ? ` · ${st.profile}` : ""}${st.tagEnrolled ? " · tag enrolled" : " · tag not enrolled yet"}` : HOSTED ? "○ Waiting for the kit's first signed reading…" : "○ Real kit not connected — switch it on, plug USB-C, run the bridge (see the hardware guide PDF)"}
           </div>
         )}
       </div>
@@ -207,7 +209,7 @@ export function Demo() {
             <div className="px-3 pb-2 text-[11px] text-ink-400">{mode === "real" ? "Drawn live from your REAL kit's signed readings." : "Live picture of the sensor station (simulated sensor input — the blockchain part is real)."}</div>
           </div>
           <Passport st={st} />
-          <p className="px-1 text-xs text-ink-400">Runs on a private demo blockchain on the presenter's laptop. {mode === "real" ? "Real mode uses PUMP-017, whose rules accept only REAL hardware evidence." : "Switch to “My real hardware kit” once the ESP32 kit is connected."}</p>
+          <p className="px-1 text-xs text-ink-400">{HOSTED ? "Runs on a private blockchain inside your browser tab — the real smart contracts, your own copy." : "Runs on a private demo blockchain on the presenter's laptop."} {mode === "real" ? "Real mode uses PUMP-017, whose rules accept only REAL hardware evidence." : "Switch to “My real hardware kit” once the ESP32 kit is connected."}</p>
         </div>
       </div>
     </div>

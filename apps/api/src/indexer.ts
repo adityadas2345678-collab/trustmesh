@@ -17,7 +17,10 @@ export class Indexer {
   reindex() { this.db.prepare("DELETE FROM chain_events").run(); setMeta(this.db, "index_cursor", "-1"); }
 
   /** Wait until confirmed events up to `block` are projected (read-your-writes for API callers). */
+  /** While true, per-action syncs are skipped (bulk seeding); call syncTo() once afterwards. */
+  deferSync = false;
   async syncTo(block?: number, ms = 15000) {
+    if (this.deferSync) return;
     const target = block ?? Number(await this.chain.pub.getBlockNumber());
     const t = Date.now();
     while (Number(getMeta(this.db, "index_cursor") ?? -1) < target && Date.now() - t < ms) {

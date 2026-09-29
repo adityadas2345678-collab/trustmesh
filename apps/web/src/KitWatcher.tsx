@@ -97,7 +97,7 @@ function Celebration({ kit, onClose }: { kit: Kit; onClose: () => void }) {
         <div className="kit-rise text-[11px] font-bold uppercase tracking-[0.35em] text-verify" style={{ animationDelay: ".2s" }}>Real hardware connected</div>
         <h2 className="kit-rise kit-shine mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ animationDelay: ".35s" }}>You're good to go!</h2>
         <p className="kit-rise mt-3 text-ink-300" style={{ animationDelay: ".5s" }}>
-          <b className="text-ink-100">{kit.deviceId}</b> is streaming <b className="text-verify">signed, verified</b> readings{kit.transport ? <> over <b className="text-ink-100">{kit.transport === "serial" ? "USB" : kit.transport === "wifi" ? "Wi-Fi" : kit.transport}</b></> : null}. Every reading is checked before it can touch the blockchain.
+          <b className="text-ink-100">{kit.deviceId}</b> is streaming <b className="text-verify">signed, verified</b> readings{kit.transport ? <> over <b className="text-ink-100">{["serial", "usb"].includes(kit.transport) ? "USB" : kit.transport === "wifi" ? "Wi-Fi" : kit.transport}</b></> : null}. Every reading is checked before it can touch the blockchain.
         </p>
         <div className="kit-rise mx-auto mt-5 flex max-w-md flex-wrap justify-center gap-2" style={{ animationDelay: ".6s" }}>
           <span className="rounded-full bg-verify/15 px-3 py-1 text-xs font-semibold text-verify ring-1 ring-verify/40">🔐 {kit.authOk ? "Signature OK" : "Checking signature…"}</span>

@@ -20,6 +20,10 @@ A sensor device watches a physical machine and signs what it sees. The evidence 
 
 </div>
 
+### 🌐 Live demo: **https://trustmesh-sooty.vercel.app**
+
+Works on any device, no install, no sign-up: the real smart contracts and backend run **inside your browser tab** (each visitor gets a private demo chain). Got the ESP32 kit? Open the site in **Chrome or Edge on a computer**, plug the kit in by USB, and choose **🔌 My real hardware kit** — the page talks to the kit directly (Web Serial).
+
 ---
 
 ## Why
